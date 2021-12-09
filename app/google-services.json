@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "829397187752",
+    "project_id": "quiz-math-4a1ea",
+    "storage_bucket": "quiz-math-4a1ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829397187752:android:2fd4f675e45536008cd69d",
+        "android_client_info": {
+          "package_name": "com.dev.quiz.math"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829397187752-knoqpj7jkh8j6ah0aacgea6gc53l3gi8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPUe-qg6k5y7jlyG4yvmO5_jqUbLxn5Ho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829397187752-knoqpj7jkh8j6ah0aacgea6gc53l3gi8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
