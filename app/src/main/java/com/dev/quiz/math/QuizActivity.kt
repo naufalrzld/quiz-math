@@ -39,22 +39,37 @@ class QuizActivity : AppCompatActivity() {
 
         binding.btnSubmit.setOnClickListener {
             val answear = binding.etAnswear.text.toString()
+            var isAnswered = false
             if (answear.isNotEmpty()) {
                 val answ = answear.toInt()
-                if (answ == questions[currentPosition].answerKey) point += 10
+                if (answ == questions[currentPosition].answerKey) {
+                    point += 10
+                    isAnswered = true
+                }
                 binding.tvPoint.text = "$point"
 
-                firebaseAnalytics.logEvent("time_to_answer") {
+                firebaseAnalytics.logEvent("question_answer") {
                     param("level", currentLevel.toLong())
-                    param("point", point.toLong())
+                    param("type", questions[currentPosition].type.toString())
+                    param("isAnswered", isAnswered.toString())
                     param("duration", analyticsDurationSeconds)
                 }
 
                 analyticsStartTime = System.currentTimeMillis()
 
-                if (currentPosition == 9) {
-                    if (currentLevel < 2) showAlertDialog("Next Level", "Do you want to continue to the next level?", "Let's do it", "No, Thanks")
-                    else showAlertDialog("Quiz Finish", "Congratulations, you got $point points", "Play again", "Amazing")
+                if (currentPosition == 1) {
+                    if (currentLevel < 3) showAlertDialog(
+                        "Next Level",
+                        "Do you want to continue to the next level?",
+                        "Let's do it",
+                        "No, Thanks"
+                    )
+                    else showAlertDialog(
+                        "Quiz Finish",
+                        "Congratulations, you got $point points",
+                        "Play again",
+                        "Amazing"
+                    )
                     currentPosition = 0
                 } else {
                     currentPosition++
@@ -88,8 +103,12 @@ class QuizActivity : AppCompatActivity() {
                     param("point", point.toLong())
                 }
 
-                if (currentLevel == 2) onBackPressed()
-                else {
+                if (currentLevel == 3) {
+                    firebaseAnalytics.logEvent("finished") {
+                        param("point", point.toLong())
+                    }
+                    onBackPressed()
+                } else {
                     point = 0
                     currentLevel = 0
                     questions = generateQuestionLvl0()
@@ -102,20 +121,27 @@ class QuizActivity : AppCompatActivity() {
             }
             .setPositiveButton(positif) { dialog, _ ->
                 dialog.dismiss()
-                firebaseAnalytics.logEvent("fight") {
+                firebaseAnalytics.logEvent("summary_of_level") {
                     param("level", currentLevel.toLong())
-                    param("point", point.toLong())
+                    param("total_point", point.toLong())
                 }
 
-                if (currentLevel == 2) {
+                if (currentLevel == 3) {
+                    firebaseAnalytics.logEvent("play_again") {
+                        param("point", point.toLong())
+                    }
                     point = 0
                     currentLevel = 0
                     questions = generateQuestionLvl0()
                     binding.tvPoint.text = "$point"
+
                 } else {
                     currentLevel++
-                    if (currentLevel == 1) questions = generateQuestionLvl1()
-                    if (currentLevel == 2) questions = generateQuestionLvl2()
+                    when (currentLevel) {
+                        1 -> questions = generateQuestionLvl1()
+                        2 -> questions = generateQuestionLvl2()
+                        3 -> questions = generateQuestionLvl3()
+                    }
                 }
                 binding.tvLevel.text = "$currentLevel"
                 questionAdapter.questions = questions
